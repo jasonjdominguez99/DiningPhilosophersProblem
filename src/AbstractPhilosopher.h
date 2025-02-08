@@ -1,25 +1,36 @@
 #pragma once
 
 #include <mutex>
+#include <random>
 
 class Fork;
 
 class AbstractPhilosopher
 {
 public:
-    explicit AbstractPhilosopher(std::mutex& outputMutex, Fork& leftFork, Fork& rightFork, const unsigned int id);
+    explicit AbstractPhilosopher(Fork&              leftFork,
+                                 Fork&              rightFork,
+                                 const unsigned int id);
     virtual ~AbstractPhilosopher() = default;
 
-    void start();
+    void start(std::mutex&                      outputMutex,
+               std::mutex&                      randomMutex,
+               std::mt19937&                    randomGenerator,
+               std::uniform_int_distribution<>& thinkingTimeDist,
+               std::uniform_int_distribution<>& eatingTimeDist);
 
 protected:
-    virtual void eat() = 0;
+    virtual void eat(std::mutex&                      outputMutex,
+                     std::mutex&                      randomMutex,
+                     std::mt19937&                    randomGenerator,
+                     std::uniform_int_distribution<>& eatingTimeDist) = 0;
 
-    void think();
+    void think(std::mutex&                      outputMutex,
+               std::mutex&                      randomMutex,
+               std::mt19937&                    randomGenerator,
+               std::uniform_int_distribution<>& thinkingTimeDist);
 
 protected:
-    std::mutex& m_outputMutex;
-
     Fork& m_leftFork;
     Fork& m_rightFork;
 

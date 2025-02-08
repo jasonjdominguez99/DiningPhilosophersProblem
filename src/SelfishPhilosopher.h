@@ -5,9 +5,12 @@
 class SelfishPhilosopher : public AbstractPhilosopher
 {
 public:
-    SelfishPhilosopher(std::mutex& outputMutex, Fork& leftFork, Fork& rightFork, const unsigned int id);
+    SelfishPhilosopher(Fork& leftFork, Fork& rightFork, const unsigned int id);
     ~SelfishPhilosopher() override = default;
 
 private:
-    void eat() override;
+    void eat(std::mutex&                      outputMutex,
+             std::mutex&                      randomMutex,
+             std::mt19937&                    randomGenerator,
+             std::uniform_int_distribution<>& eatingTimeDist) override;
 };

@@ -5,29 +5,39 @@
 #include <iostream>
 #include <thread>
 
-AbstractPhilosopher::AbstractPhilosopher(std::mutex& outputMutex, Fork& leftFork, Fork& rightFork, const unsigned int id) :
-    m_outputMutex(outputMutex),
+AbstractPhilosopher::AbstractPhilosopher(Fork& leftFork, Fork& rightFork, const unsigned int id) :
     m_leftFork(leftFork),
     m_rightFork(rightFork),
     m_id(id)
 {
 }
 
-void AbstractPhilosopher::start()
+void AbstractPhilosopher::start(std::mutex&                      outputMutex,
+                                std::mutex&                      randomMutex,
+                                std::mt19937&                    randomGenerator,
+                                std::uniform_int_distribution<>& thinkingTimeDist,
+                                std::uniform_int_distribution<>& eatingTimeDist)
 {
     while (true)
     {
-        think();
-        eat();
+        think(outputMutex, randomMutex, randomGenerator, thinkingTimeDist);
+        eat(outputMutex, randomMutex, randomGenerator, eatingTimeDist);
     }
 }
 
-void AbstractPhilosopher::think()
+void AbstractPhilosopher::think(std::mutex&                      outputMutex,
+                                std::mutex&                      randomMutex,
+                                std::mt19937&                    randomGenerator,
+                                std::uniform_int_distribution<>& thinkingTimeDist)
 {
     {
-        std::lock_guard<std::mutex> lock(m_outputMutex);
+        std::lock_guard<std::mutex> lock(outputMutex);
         std::cout << "Philosopher " << m_id << " THINKING" << std::endl;
     }
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::unique_lock<std::mutex> randomLock { randomMutex };
+    const int                    sleepingTime = thinkingTimeDist(randomGenerator);
+    randomLock.unlock();
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(sleepingTime));
 }
