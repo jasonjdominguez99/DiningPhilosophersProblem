@@ -28,11 +28,11 @@ int main()
 
     Fork fork1(1), fork2(2), fork3(3), fork4(4), fork5(5);
 
-    SelfishPhilosopher philosopher1(fork1, fork2, 1);
-    SelfishPhilosopher philosopher2(fork2, fork3, 2);
-    SelfishPhilosopher philosopher3(fork3, fork4, 3);
-    SelfishPhilosopher philosopher4(fork4, fork5, 4);
-    SelfishPhilosopher philosopher5(fork5, fork1, 5);
+    SelfishPhilosopher philosopher1(fork1, fork5, 1);
+    SelfishPhilosopher philosopher2(fork2, fork1, 2);
+    SelfishPhilosopher philosopher3(fork3, fork2, 3);
+    SelfishPhilosopher philosopher4(fork4, fork3, 4);
+    SelfishPhilosopher philosopher5(fork5, fork4, 5);
 
     std::jthread t0([&]
                     { philosopher1.start(context); });
