@@ -40,7 +40,7 @@ protected:
     virtual void eat(std::mutex& outputMutex, const TimeGenerator& eatingTimeGenerator) = 0;
     void         think(std::mutex& outputMutex, const TimeGenerator& thinkingTimeGenerator);
 
-    [[nodiscard]] int getRandomTime(const TimeGenerator& timeGenerator);
+    [[nodiscard]] int getRandomTime(const TimeGenerator& timeGenerator) const;
 
     void displayGrabbedFork(std::mutex& outputMutex, const unsigned int forkId) const;
     void displayLetGoOfFork(std::mutex& outputMutex, const unsigned int forkId) const;

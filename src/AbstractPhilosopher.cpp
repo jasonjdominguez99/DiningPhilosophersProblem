@@ -29,7 +29,7 @@ void AbstractPhilosopher::think(std::mutex& outputMutex, const TimeGenerator& th
     std::this_thread::sleep_for(std::chrono::milliseconds(thinkingTime));
 }
 
-int AbstractPhilosopher::getRandomTime(const TimeGenerator& timeGenerator)
+int AbstractPhilosopher::getRandomTime(const TimeGenerator& timeGenerator) const
 {
     auto& [randomMutex, randomGenerator, timeDist] = timeGenerator;
     std::lock_guard<std::mutex> randomLock { randomMutex };
