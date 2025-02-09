@@ -5,9 +5,9 @@
 #include <iostream>
 #include <thread>
 
-AbstractPhilosopher::AbstractPhilosopher(Fork& leftFork, Fork& rightFork, const unsigned int id) noexcept :
-    m_leftFork(leftFork),
-    m_rightFork(rightFork),
+AbstractPhilosopher::AbstractPhilosopher(Fork& fork1, Fork& fork2, const unsigned int id) noexcept :
+    m_fork1(fork1),
+    m_fork2(fork2),
     m_id(id)
 {
 }

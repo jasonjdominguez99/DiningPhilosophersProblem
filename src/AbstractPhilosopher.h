@@ -24,8 +24,8 @@ struct TimeGenerator
 class AbstractPhilosopher
 {
 public:
-    explicit AbstractPhilosopher(Fork&              leftFork,
-                                 Fork&              rightFork,
+    explicit AbstractPhilosopher(Fork&              fork1,
+                                 Fork&              fork2,
                                  const unsigned int id) noexcept;
     virtual ~AbstractPhilosopher() = default;
 
@@ -48,8 +48,8 @@ protected:
     void displayThinking(std::mutex& outputMutex) const;
 
 protected:
-    Fork& m_leftFork;
-    Fork& m_rightFork;
+    Fork& m_fork1;
+    Fork& m_fork2;
 
     const unsigned int m_id;
 };

@@ -5,27 +5,29 @@
 #include <mutex>
 #include <thread>
 
-SelfishPhilosopher::SelfishPhilosopher(Fork& leftFork, Fork& rightFork, const unsigned int id) noexcept :
-    AbstractPhilosopher(leftFork, rightFork, id)
+SelfishPhilosopher::SelfishPhilosopher(Fork& firstFork, Fork& secondFork, const unsigned int id) noexcept :
+    AbstractPhilosopher(firstFork, secondFork, id)
 {
 }
 
+SelfishPhilosopher::~SelfishPhilosopher() = default;
+
 void SelfishPhilosopher::eat(std::mutex& outputMutex, const TimeGenerator& eatingTimeGenerator)
 {
-    std::unique_lock<Fork> leftForkLock(m_leftFork);
-    displayGrabbedFork(outputMutex, m_leftFork.getId());
+    std::unique_lock<Fork> firstForkLock(m_fork1);
+    displayGrabbedFork(outputMutex, m_fork1.getId());
 
-    std::unique_lock<Fork> rightForkLock(m_rightFork);
-    displayGrabbedFork(outputMutex, m_rightFork.getId());
+    std::unique_lock<Fork> secondForkLock(m_fork2);
+    displayGrabbedFork(outputMutex, m_fork2.getId());
 
     displayEating(outputMutex);
 
     const int eatingTime = getRandomTime(eatingTimeGenerator);
     std::this_thread::sleep_for(std::chrono::milliseconds(eatingTime));
 
-    leftForkLock.unlock();
-    displayLetGoOfFork(outputMutex, m_leftFork.getId());
+    firstForkLock.unlock();
+    displayLetGoOfFork(outputMutex, m_fork1.getId());
 
-    rightForkLock.unlock();
-    displayLetGoOfFork(outputMutex, m_rightFork.getId());
+    secondForkLock.unlock();
+    displayLetGoOfFork(outputMutex, m_fork2.getId());
 }
