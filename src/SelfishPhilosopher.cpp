@@ -13,34 +13,19 @@ SelfishPhilosopher::SelfishPhilosopher(Fork& leftFork, Fork& rightFork, const un
 void SelfishPhilosopher::eat(std::mutex& outputMutex, const TimeGenerator& eatingTimeGenerator)
 {
     std::unique_lock<Fork> leftForkLock(m_leftFork);
-    {
-        std::lock_guard<std::mutex> lock(outputMutex);
-        std::cout << "Philosopher " << m_id << " grabbed FORK " << m_leftFork.getId() << std::endl;
-    }
+    displayGrabbedFork(outputMutex, m_leftFork.getId());
 
     std::unique_lock<Fork> rightForkLock(m_rightFork);
-    {
-        std::lock_guard<std::mutex> lock(outputMutex);
-        std::cout << "Philosopher " << m_id << " grabbed FORK " << m_rightFork.getId() << std::endl;
-    }
+    displayGrabbedFork(outputMutex, m_rightFork.getId());
 
-    {
-        std::lock_guard<std::mutex> lock(outputMutex);
-        std::cout << "Philosopher " << m_id << " EATING" << std::endl;
-    }
+    displayEating(outputMutex);
 
     const int eatingTime = getRandomTime(eatingTimeGenerator);
     std::this_thread::sleep_for(std::chrono::milliseconds(eatingTime));
 
     leftForkLock.unlock();
-    {
-        std::lock_guard<std::mutex> lock(outputMutex);
-        std::cout << "Philosopher " << m_id << " let go of FORK " << m_leftFork.getId() << std::endl;
-    }
+    displayLetGoOfFork(outputMutex, m_leftFork.getId());
 
     rightForkLock.unlock();
-    {
-        std::lock_guard<std::mutex> lock(outputMutex);
-        std::cout << "Philosopher " << m_id << " let go of FORK " << m_rightFork.getId() << std::endl;
-    }
+    displayLetGoOfFork(outputMutex, m_rightFork.getId());
 }

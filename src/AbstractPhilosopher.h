@@ -42,6 +42,11 @@ protected:
 
     [[nodiscard]] int getRandomTime(const TimeGenerator& timeGenerator);
 
+    void displayGrabbedFork(std::mutex& outputMutex, const unsigned int forkId) const;
+    void displayLetGoOfFork(std::mutex& outputMutex, const unsigned int forkId) const;
+    void displayEating(std::mutex& outputMutex) const;
+    void displayThinking(std::mutex& outputMutex) const;
+
 protected:
     Fork& m_leftFork;
     Fork& m_rightFork;
