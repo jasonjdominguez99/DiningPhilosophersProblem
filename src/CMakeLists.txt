@@ -13,4 +13,5 @@ add_executable(DiningPhilosophersProblem
     main.cpp
     AbstractPhilosopher.cpp
     SelfishPhilosopher.cpp
+    OrderedPhilosopher.cpp
 )

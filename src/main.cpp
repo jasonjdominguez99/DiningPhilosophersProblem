@@ -3,6 +3,7 @@
 
 #include "Fork.h"
 #include "LeftHandedPhilosopher.h"
+#include "OrderedPhilosopher.h"
 #include "RightHandedPhilosopher.h"
 
 namespace
@@ -35,11 +36,17 @@ int main()
     // LeftHandedPhilosopher philosopher4(fork4, fork3, 4);
     // LeftHandedPhilosopher philosopher5(fork5, fork4, 5);
 
-    LeftHandedPhilosopher  philosopher1(fork1, fork5, 1);
-    RightHandedPhilosopher philosopher2(fork2, fork1, 2);
-    LeftHandedPhilosopher  philosopher3(fork3, fork2, 3);
-    RightHandedPhilosopher philosopher4(fork4, fork3, 4);
-    LeftHandedPhilosopher  philosopher5(fork5, fork4, 5);
+    // LeftHandedPhilosopher  philosopher1(fork1, fork5, 1);
+    // RightHandedPhilosopher philosopher2(fork2, fork1, 2);
+    // LeftHandedPhilosopher  philosopher3(fork3, fork2, 3);
+    // RightHandedPhilosopher philosopher4(fork4, fork3, 4);
+    // LeftHandedPhilosopher  philosopher5(fork5, fork4, 5);
+
+    OrderedPhilosopher philosopher1(fork1, fork5, 1);
+    OrderedPhilosopher philosopher2(fork2, fork1, 2);
+    OrderedPhilosopher philosopher3(fork3, fork2, 3);
+    OrderedPhilosopher philosopher4(fork4, fork3, 4);
+    OrderedPhilosopher philosopher5(fork5, fork4, 5);
 
     std::jthread t0([&]
                     { philosopher1.start(context); });
