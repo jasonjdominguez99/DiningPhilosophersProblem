@@ -24,6 +24,8 @@ int main()
     std::uniform_int_distribution<> thinkingTimeDist(MinThinkingTime, MaxThinkingTime);
     std::uniform_int_distribution<> eatingTimeDist(MinEatingTime, MaxEatingTime);
 
+    const PhilosopherContext context { outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist };
+
     Fork fork1(1), fork2(2), fork3(3), fork4(4), fork5(5);
 
     SelfishPhilosopher philosopher1(fork1, fork2, 1);
@@ -33,15 +35,15 @@ int main()
     SelfishPhilosopher philosopher5(fork5, fork1, 5);
 
     std::jthread t0([&]
-                    { philosopher1.start(outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist); });
+                    { philosopher1.start(context); });
     std::jthread t1([&]
-                    { philosopher2.start(outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist); });
+                    { philosopher2.start(context); });
     std::jthread t2([&]
-                    { philosopher3.start(outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist); });
+                    { philosopher3.start(context); });
     std::jthread t3([&]
-                    { philosopher4.start(outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist); });
+                    { philosopher4.start(context); });
     std::jthread t4([&]
-                    { philosopher5.start(outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist); });
+                    { philosopher5.start(context); });
 
     return 0;
 }

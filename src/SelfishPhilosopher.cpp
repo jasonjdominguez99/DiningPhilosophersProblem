@@ -5,15 +5,12 @@
 #include <mutex>
 #include <thread>
 
-SelfishPhilosopher::SelfishPhilosopher(Fork& leftFork, Fork& rightFork, const unsigned int id) :
+SelfishPhilosopher::SelfishPhilosopher(Fork& leftFork, Fork& rightFork, const unsigned int id) noexcept :
     AbstractPhilosopher(leftFork, rightFork, id)
 {
 }
 
-void SelfishPhilosopher::eat(std::mutex&                      outputMutex,
-                             std::mutex&                      randomMutex,
-                             std::mt19937&                    randomGenerator,
-                             std::uniform_int_distribution<>& eatingTimeDist)
+void SelfishPhilosopher::eat(std::mutex& outputMutex, const TimeGenerator& eatingTimeGenerator)
 {
     std::unique_lock<Fork> leftForkLock(m_leftFork);
     {
@@ -32,10 +29,7 @@ void SelfishPhilosopher::eat(std::mutex&                      outputMutex,
         std::cout << "Philosopher " << m_id << " EATING" << std::endl;
     }
 
-    std::unique_lock<std::mutex> randomLock { randomMutex };
-    const int                    eatingTime = eatingTimeDist(randomGenerator);
-    randomLock.unlock();
-
+    const int eatingTime = getRandomTime(eatingTimeGenerator);
     std::this_thread::sleep_for(std::chrono::milliseconds(eatingTime));
 
     leftForkLock.unlock();

@@ -5,30 +5,42 @@
 
 class Fork;
 
+struct PhilosopherContext
+{
+    std::mutex&                      outputMutex;
+    std::mutex&                      randomMutex;
+    std::mt19937&                    randomGenerator;
+    std::uniform_int_distribution<>& thinkingTimeDist;
+    std::uniform_int_distribution<>& eatingTimeDist;
+};
+
+struct TimeGenerator
+{
+    std::mutex&                      randomMutex;
+    std::mt19937&                    randomGenerator;
+    std::uniform_int_distribution<>& timeDist;
+};
+
 class AbstractPhilosopher
 {
 public:
     explicit AbstractPhilosopher(Fork&              leftFork,
                                  Fork&              rightFork,
-                                 const unsigned int id);
+                                 const unsigned int id) noexcept;
     virtual ~AbstractPhilosopher() = default;
 
-    void start(std::mutex&                      outputMutex,
-               std::mutex&                      randomMutex,
-               std::mt19937&                    randomGenerator,
-               std::uniform_int_distribution<>& thinkingTimeDist,
-               std::uniform_int_distribution<>& eatingTimeDist);
+    AbstractPhilosopher(const AbstractPhilosopher&) = delete;
+    AbstractPhilosopher& operator=(const AbstractPhilosopher&) = delete;
+    AbstractPhilosopher(AbstractPhilosopher&&) = delete;
+    AbstractPhilosopher& operator=(AbstractPhilosopher&&) = delete;
+
+    void start(const PhilosopherContext& context);
 
 protected:
-    virtual void eat(std::mutex&                      outputMutex,
-                     std::mutex&                      randomMutex,
-                     std::mt19937&                    randomGenerator,
-                     std::uniform_int_distribution<>& eatingTimeDist) = 0;
+    virtual void eat(std::mutex& outputMutex, const TimeGenerator& eatingTimeGenerator) = 0;
+    void         think(std::mutex& outputMutex, const TimeGenerator& thinkingTimeGenerator);
 
-    void think(std::mutex&                      outputMutex,
-               std::mutex&                      randomMutex,
-               std::mt19937&                    randomGenerator,
-               std::uniform_int_distribution<>& thinkingTimeDist);
+    [[nodiscard]] int getRandomTime(const TimeGenerator& timeGenerator);
 
 protected:
     Fork& m_leftFork;
