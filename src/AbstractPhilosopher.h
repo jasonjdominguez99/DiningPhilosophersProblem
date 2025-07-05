@@ -34,7 +34,7 @@ public:
     AbstractPhilosopher(AbstractPhilosopher&&) = delete;
     AbstractPhilosopher& operator=(AbstractPhilosopher&&) = delete;
 
-    void start(const PhilosopherContext& context);
+    void start(const PhilosopherContext& context, std::stop_token stopToken);
 
 protected:
     virtual void eat(std::mutex& outputMutex, const TimeGenerator& eatingTimeGenerator) = 0;

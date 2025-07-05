@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stop_token>
 #include <thread>
 
 #include "Fork.h"
@@ -12,6 +13,7 @@ namespace
     constexpr int MaxThinkingTime = 300;
     constexpr int MinEatingTime = 200;
     constexpr int MaxEatingTime = 500;
+    constexpr int TotalRunTime = 10000; // milliseconds
 }
 
 int main()
@@ -48,16 +50,22 @@ int main()
     OrderedPhilosopher philosopher4(fork4, fork3, 4);
     OrderedPhilosopher philosopher5(fork5, fork4, 5);
 
-    std::jthread t0([&]
-                    { philosopher1.start(context); });
-    std::jthread t1([&]
-                    { philosopher2.start(context); });
-    std::jthread t2([&]
-                    { philosopher3.start(context); });
-    std::jthread t3([&]
-                    { philosopher4.start(context); });
-    std::jthread t4([&]
-                    { philosopher5.start(context); });
+    std::jthread t0([&](std::stop_token stopToken)
+                    { philosopher1.start(context, stopToken); });
+    std::jthread t1([&](std::stop_token stopToken)
+                    { philosopher2.start(context, stopToken); });
+    std::jthread t2([&](std::stop_token stopToken)
+                    { philosopher3.start(context, stopToken); });
+    std::jthread t3([&](std::stop_token stopToken)
+                    { philosopher4.start(context, stopToken); });
+    std::jthread t4([&](std::stop_token stopToken)
+                    { philosopher5.start(context, stopToken); });
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(TotalRunTime));
+    {
+        std::lock_guard<std::mutex> lock(outputMutex);
+        std::cout << "Stopping philosophers..." << std::endl;
+    }
 
     return 0;
 }

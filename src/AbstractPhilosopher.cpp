@@ -12,12 +12,16 @@ AbstractPhilosopher::AbstractPhilosopher(Fork& fork1, Fork& fork2, const unsigne
 {
 }
 
-void AbstractPhilosopher::start(const PhilosopherContext& context)
+void AbstractPhilosopher::start(const PhilosopherContext& context, std::stop_token stopToken)
 {
     auto& [outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist] = context;
-    while (true)
+    while (!stopToken.stop_requested())
     {
         think(outputMutex, { randomMutex, randomGenerator, thinkingTimeDist });
+        if (stopToken.stop_requested())
+        {
+            return; // Don't attempt to eat if stop requested after thinking
+        }
         eat(outputMutex, { randomMutex, randomGenerator, eatingTimeDist });
     }
 }
