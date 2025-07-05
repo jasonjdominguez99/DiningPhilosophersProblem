@@ -1,4 +1,5 @@
 #include <iostream>
+#include <latch>
 #include <stop_token>
 #include <thread>
 
@@ -19,6 +20,9 @@ namespace
 int main()
 {
     std::cout << "Dining Philosophers Problem" << std::endl;
+    std::cout << "Preparing philosophers..." << std::endl;
+
+    std::latch startLatch(6); // 5 philosophers + main thread
 
     std::mutex outputMutex;
 
@@ -28,7 +32,7 @@ int main()
     std::uniform_int_distribution<> thinkingTimeDist(MinThinkingTime, MaxThinkingTime);
     std::uniform_int_distribution<> eatingTimeDist(MinEatingTime, MaxEatingTime);
 
-    const PhilosopherContext context { outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist };
+    const PhilosopherContext context { outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist, startLatch };
 
     Fork fork1(1), fork2(2), fork3(3), fork4(4), fork5(5);
 
@@ -60,6 +64,12 @@ int main()
                     { philosopher4.start(context, stopToken); });
     std::jthread t4([&](std::stop_token stopToken)
                     { philosopher5.start(context, stopToken); });
+
+    {
+        std::lock_guard<std::mutex> lock(outputMutex);
+        std::cout << "Philosophers may start eating!" << std::endl;
+    }
+    startLatch.arrive_and_wait(); // Wait for all philosophers to be ready
 
     std::this_thread::sleep_for(std::chrono::milliseconds(TotalRunTime));
     {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <latch>
 #include <mutex>
 #include <random>
 
@@ -12,6 +13,7 @@ struct PhilosopherContext
     std::mt19937&                    randomGenerator;
     std::uniform_int_distribution<>& thinkingTimeDist;
     std::uniform_int_distribution<>& eatingTimeDist;
+    std::latch&                      startLatch;
 };
 
 struct TimeGenerator

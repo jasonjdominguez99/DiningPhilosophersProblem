@@ -14,7 +14,10 @@ AbstractPhilosopher::AbstractPhilosopher(Fork& fork1, Fork& fork2, const unsigne
 
 void AbstractPhilosopher::start(const PhilosopherContext& context, std::stop_token stopToken)
 {
-    auto& [outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist] = context;
+    auto& [outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist, startLatch] = context;
+
+    startLatch.arrive_and_wait(); // Wait for all philosophers to be ready
+
     while (!stopToken.stop_requested())
     {
         think(outputMutex, { randomMutex, randomGenerator, thinkingTimeDist });
