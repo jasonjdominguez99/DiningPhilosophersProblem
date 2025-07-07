@@ -6,10 +6,14 @@
 #include "Fork.h"
 #include "LeftHandedPhilosopher.h"
 #include "OrderedPhilosopher.h"
+#include "PhilosophersFactory.h"
 #include "RightHandedPhilosopher.h"
 
 namespace
 {
+    constexpr int      NumPhilosophers = 5;
+    constexpr Strategy strategy = Strategy::Hierarchical;
+
     constexpr int MinThinkingTime = 100;
     constexpr int MaxThinkingTime = 300;
     constexpr int MinEatingTime = 200;
@@ -22,7 +26,7 @@ int main()
     std::cout << "Dining Philosophers Problem" << std::endl;
     std::cout << "Preparing philosophers..." << std::endl;
 
-    std::latch startLatch(6); // 5 philosophers + main thread
+    std::latch startLatch(NumPhilosophers + 1); // number of philosophers + main thread
 
     std::mutex outputMutex;
 
@@ -34,36 +38,23 @@ int main()
 
     const PhilosopherContext context { outputMutex, randomMutex, randomGenerator, thinkingTimeDist, eatingTimeDist, startLatch };
 
-    Fork fork1(1), fork2(2), fork3(3), fork4(4), fork5(5);
+    std::vector<std::unique_ptr<Fork>> forks;
+    forks.reserve(NumPhilosophers);
+    for (size_t i = 0; i < NumPhilosophers; ++i)
+    {
+        forks.emplace_back(std::make_unique<Fork>(i + 1)); // Fork IDs start from 1
+    }
 
-    // LeftHandedPhilosopher philosopher1(fork1, fork5, 1);
-    // LeftHandedPhilosopher philosopher2(fork2, fork1, 2);
-    // LeftHandedPhilosopher philosopher3(fork3, fork2, 3);
-    // LeftHandedPhilosopher philosopher4(fork4, fork3, 4);
-    // LeftHandedPhilosopher philosopher5(fork5, fork4, 5);
+    auto philosophers = PhilosophersFactory::create(forks, strategy);
 
-    // LeftHandedPhilosopher  philosopher1(fork1, fork5, 1);
-    // RightHandedPhilosopher philosopher2(fork2, fork1, 2);
-    // LeftHandedPhilosopher  philosopher3(fork3, fork2, 3);
-    // RightHandedPhilosopher philosopher4(fork4, fork3, 4);
-    // LeftHandedPhilosopher  philosopher5(fork5, fork4, 5);
-
-    OrderedPhilosopher philosopher1(fork1, fork5, 1);
-    OrderedPhilosopher philosopher2(fork2, fork1, 2);
-    OrderedPhilosopher philosopher3(fork3, fork2, 3);
-    OrderedPhilosopher philosopher4(fork4, fork3, 4);
-    OrderedPhilosopher philosopher5(fork5, fork4, 5);
-
-    std::jthread t0([&](std::stop_token stopToken)
-                    { philosopher1.start(context, stopToken); });
-    std::jthread t1([&](std::stop_token stopToken)
-                    { philosopher2.start(context, stopToken); });
-    std::jthread t2([&](std::stop_token stopToken)
-                    { philosopher3.start(context, stopToken); });
-    std::jthread t3([&](std::stop_token stopToken)
-                    { philosopher4.start(context, stopToken); });
-    std::jthread t4([&](std::stop_token stopToken)
-                    { philosopher5.start(context, stopToken); });
+    std::vector<std::jthread> philosopherThreads;
+    philosopherThreads.reserve(NumPhilosophers);
+    for (size_t i = 0; i < NumPhilosophers; ++i)
+    {
+        philosopherThreads.emplace_back([&](std::stop_token stopToken, size_t id)
+                                        { philosophers[id]->start(context, stopToken); },
+                                        i);
+    }
 
     {
         std::lock_guard<std::mutex> lock(outputMutex);
