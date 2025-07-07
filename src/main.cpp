@@ -11,7 +11,7 @@
 
 namespace
 {
-    constexpr int      NumPhilosophers = 5;
+    constexpr size_t   NumPhilosophers = 5;
     constexpr Strategy strategy = Strategy::Hierarchical;
 
     constexpr int MinThinkingTime = 100;
