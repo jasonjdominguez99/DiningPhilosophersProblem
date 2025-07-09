@@ -4,6 +4,8 @@
 #include "OrderedPhilosopher.h"
 #include "RightHandedPhilosopher.h"
 
+#include <stddef.h>
+
 Philosophers PhilosophersFactory::create(const Forks& forks, const Strategy strategy) noexcept
 {
     const size_t numPhilosophers = forks.size();

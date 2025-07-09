@@ -1,7 +1,10 @@
 #include "AbstractPhilosopher.h"
 
 #include "Fork.h"
+#include "PhilosopherContext.h"
 
+#include <chrono>
+#include <latch>
 #include <print>
 #include <thread>
 

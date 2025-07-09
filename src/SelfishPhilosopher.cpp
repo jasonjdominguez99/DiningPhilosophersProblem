@@ -1,7 +1,9 @@
 #include "SelfishPhilosopher.h"
+
 #include "Fork.h"
 
-#include <iostream>
+#include <chrono>
+#include <memory>
 #include <mutex>
 #include <thread>
 

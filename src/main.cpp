@@ -1,14 +1,17 @@
+#include "AbstractPhilosopher.h"
+#include "Fork.h"
+#include "PhilosopherContext.h"
+#include "PhilosophersFactory.h"
+#include "SimulationConfig.h"
+
 #include <latch>
+#include <memory>
+#include <mutex>
 #include <print>
+#include <random>
 #include <stop_token>
 #include <thread>
-
-#include "Fork.h"
-#include "LeftHandedPhilosopher.h"
-#include "OrderedPhilosopher.h"
-#include "PhilosophersFactory.h"
-#include "RightHandedPhilosopher.h"
-#include "SimulationConfig.h"
+#include <vector>
 
 int main()
 {
