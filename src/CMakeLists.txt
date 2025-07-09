@@ -8,6 +8,14 @@ project(DiningPhilosophersProblem)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Only disable Apple-specific flags if using GCC on macOS
+if(APPLE AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message(STATUS "Using GCC on macOS - disabling Apple-specific flags")
+    set(CMAKE_OSX_ARCHITECTURES "")
+    set(CMAKE_OSX_SYSROOT "")
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "")
+endif()
+
 # Add all the source files for your project
 add_executable(DiningPhilosophersProblem
     main.cpp
