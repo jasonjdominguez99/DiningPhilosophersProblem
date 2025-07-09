@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Strategy.h"
+
 #include <memory>
 #include <vector>
 
@@ -8,13 +10,6 @@ class Fork;
 
 using Forks = std::vector<std::unique_ptr<Fork>>;
 using Philosophers = std::vector<std::unique_ptr<AbstractPhilosopher>>;
-
-enum class Strategy
-{
-    Asymmetric,
-    Hierarchical,
-    Naive
-};
 
 class PhilosophersFactory
 {
