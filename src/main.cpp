@@ -8,21 +8,13 @@
 #include "OrderedPhilosopher.h"
 #include "PhilosophersFactory.h"
 #include "RightHandedPhilosopher.h"
-
-namespace
-{
-    constexpr size_t   NumPhilosophers = 5;
-    constexpr Strategy strategy = Strategy::Hierarchical;
-
-    constexpr int MinThinkingTime = 100;
-    constexpr int MaxThinkingTime = 300;
-    constexpr int MinEatingTime = 200;
-    constexpr int MaxEatingTime = 500;
-    constexpr int TotalRunTime = 10000; // milliseconds
-}
+#include "SimulationConfig.h"
 
 int main()
 {
+    const SimulationConfig config; // default configuration
+    const auto& [NumPhilosophers, strategy, TotalRunTime, MinThinkingTime, MaxThinkingTime, MinEatingTime, MaxEatingTime] = config;
+
     std::println("Dining Philosophers Problem");
     std::println("Preparing philosophers...");
 
