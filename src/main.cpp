@@ -1,5 +1,5 @@
-#include <iostream>
 #include <latch>
+#include <print>
 #include <stop_token>
 #include <thread>
 
@@ -23,8 +23,8 @@ namespace
 
 int main()
 {
-    std::cout << "Dining Philosophers Problem" << std::endl;
-    std::cout << "Preparing philosophers..." << std::endl;
+    std::println("Dining Philosophers Problem");
+    std::println("Preparing philosophers...");
 
     std::latch startLatch(NumPhilosophers + 1); // number of philosophers + main thread
 
@@ -58,14 +58,14 @@ int main()
 
     {
         std::lock_guard<std::mutex> lock(outputMutex);
-        std::cout << "Philosophers may start eating!" << std::endl;
+        std::println("Philosophers may start eating!");
     }
     startLatch.arrive_and_wait(); // Wait for all philosophers to be ready
 
     std::this_thread::sleep_for(std::chrono::milliseconds(TotalRunTime));
     {
         std::lock_guard<std::mutex> lock(outputMutex);
-        std::cout << "Stopping philosophers..." << std::endl;
+        std::println("Stopping philosophers...");
     }
 
     return 0;

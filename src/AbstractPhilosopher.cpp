@@ -2,7 +2,7 @@
 
 #include "Fork.h"
 
-#include <iostream>
+#include <print>
 #include <thread>
 
 AbstractPhilosopher::AbstractPhilosopher(Fork& fork1, Fork& fork2, const unsigned int id) noexcept :
@@ -46,23 +46,23 @@ int AbstractPhilosopher::getRandomTime(const TimeGenerator& timeGenerator) const
 void AbstractPhilosopher::displayGrabbedFork(std::mutex& outputMutex, const unsigned int forkId) const
 {
     std::lock_guard<std::mutex> lock(outputMutex);
-    std::cout << "Philosopher " << m_id << " grabbed FORK " << forkId << std::endl;
+    std::println("Philosopher {} grabbed FORK {}", m_id, forkId);
 }
 
 void AbstractPhilosopher::displayLetGoOfFork(std::mutex& outputMutex, const unsigned int forkId) const
 {
     std::lock_guard<std::mutex> lock(outputMutex);
-    std::cout << "Philosopher " << m_id << " let go of FORK " << forkId << std::endl;
+    std::println("Philosopher {} let go of FORK {}", m_id, forkId);
 }
 
 void AbstractPhilosopher::displayEating(std::mutex& outputMutex) const
 {
     std::lock_guard<std::mutex> lock(outputMutex);
-    std::cout << "Philosopher " << m_id << " EATING" << std::endl;
+    std::println("Philosopher {} EATING", m_id);
 }
 
 void AbstractPhilosopher::displayThinking(std::mutex& outputMutex) const
 {
     std::lock_guard<std::mutex> lock(outputMutex);
-    std::cout << "Philosopher " << m_id << " THINKING" << std::endl;
+    std::println("Philosopher {} THINKING", m_id);
 }
