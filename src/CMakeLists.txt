@@ -23,4 +23,5 @@ add_executable(DiningPhilosophersProblem
     SelfishPhilosopher.cpp
     OrderedPhilosopher.cpp
     PhilosophersFactory.cpp
+    SimulationArgParser.cpp
 )

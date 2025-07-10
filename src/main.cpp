@@ -2,6 +2,7 @@
 #include "Fork.h"
 #include "PhilosopherContext.h"
 #include "PhilosophersFactory.h"
+#include "SimulationArgParser.h"
 #include "SimulationConfig.h"
 
 #include <latch>
@@ -13,9 +14,29 @@
 #include <thread>
 #include <vector>
 
-int main()
+int main(int argc, char* argv[])
 {
-    const SimulationConfig config; // default configuration
+    SimulationConfig config;
+
+    try
+    {
+        const auto parsedConfig = SimulationArgParser::parse(argc, argv);
+        if (!parsedConfig.has_value())
+        {
+            return 0;
+        }
+        else
+        {
+            config = parsedConfig.value();
+        }
+    }
+    catch (const std::invalid_argument& e)
+    {
+        std::println("Error: {}", e.what());
+        std::println("{}", SimulationArgParser::HELP_MESSAGE);
+        return 1;
+    }
+
     const auto& [NumPhilosophers, strategy, TotalRunTime, MinThinkingTime, MaxThinkingTime, MinEatingTime, MaxEatingTime] = config;
 
     std::println("Dining Philosophers Problem");
